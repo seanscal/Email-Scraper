@@ -3,7 +3,6 @@ import urllib2
 import urlparse
 
 from bs4 import BeautifulSoup
-import validate_regex
 from selenium import webdriver
 
 
@@ -44,7 +43,6 @@ class GetEmails():
         Get the links from each page using Beautiful Soup html parser. 
         If the link does not contain the original domain or is invalid, it is not added. 
         '''
-
         soup = BeautifulSoup(text, 'html.parser')
         for link in soup.findAll('a', href=True):
             link = urlparse.urljoin(url,link.get('href'))
