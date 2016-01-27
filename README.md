@@ -14,6 +14,7 @@ in the command line
 To install packages, the easiest way is to have homebrew (mac) and pip installed.
 
 _Homebrew_ - `/usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"` in the command line
+
 _pip_ - `sudo easy_install pip`
 
 #Necessary Packages
