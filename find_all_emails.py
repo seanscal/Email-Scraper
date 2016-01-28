@@ -8,13 +8,13 @@ class GetEmails():
     '''
     Gets all the emails contained in a domain and prints them out.
     '''
-    def __init__(self, domain):
+    def __init__(self, domain, protocol):
         self.domain = domain
-        self.url = self.complete_domain_name()
-        self.site_map = [self.url]
         self.links_visited = []
         self.emails = []
-
+        self.protocol = protocol + "://"
+        self.url = self.complete_domain_name(self.protocol)
+        self.site_map = [self.url]
     def is_valid_domain(self, domain):
         '''
         Check if the domain entered is a valid domain.
@@ -25,13 +25,13 @@ class GetEmails():
             return True
         return False
 
-    def complete_domain_name(self):
+    def complete_domain_name(self, protocol):
         '''
         Get the entire domain name, adding a '/' if one was not given
         '''
         complete_name = self.domain
-        if not "http://" in self.domain and "https://" not in self.domain:
-            complete_name = 'http://' + complete_name
+        if not self.protocol in self.domain:
+            complete_name = self.protocol + complete_name
         if complete_name[-1] != '/':
             complete_name = complete_name + '/'
         return complete_name
@@ -51,7 +51,7 @@ class GetEmails():
 
     def is_not_image(self, link):
         '''
-        Determines whether a given href is an image
+        Determines whether a given href is not an image
         '''
         image_tags = [".png", ".jpeg", ".jpg", ".gif"]
         return all([tag not in link for tag in image_tags])
@@ -62,7 +62,7 @@ class GetEmails():
         '''
         if link in self.links_visited:
             return False
-        if self.complete_domain_name() not in link:
+        if self.complete_domain_name(self.protocol) not in link:
             return False
         if link in self.site_map:
             return False
