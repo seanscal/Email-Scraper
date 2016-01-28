@@ -12,7 +12,7 @@ class GetEmails():
         self.domain = domain
         self.links_visited = []
         self.emails = []
-        self.protocol = protocol + "://"
+        self.protocol = protocol + "://www."
         self.url = self.complete_domain_name(self.protocol)
         self.site_map = [self.url]
     def is_valid_domain(self, domain):
@@ -47,6 +47,7 @@ class GetEmails():
         for link in soup.findAll('a', href=True):
             link = urlparse.urljoin(url, link.get('href'))
             if self.is_not_image(link) and self.should_explore(link):
+                print link
                 self.site_map.append(link)
 
     def is_not_image(self, link):
@@ -62,11 +63,10 @@ class GetEmails():
         '''
         if link in self.links_visited:
             return False
-        if self.complete_domain_name(self.protocol) not in link:
+        if not link.startswith(self.url):
             return False
         if link in self.site_map:
             return False
-
         return True
 
     def find_emails_in_site(self):
