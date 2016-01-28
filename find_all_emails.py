@@ -2,7 +2,7 @@ import re
 import urlparse
 from bs4 import BeautifulSoup
 from selenium import webdriver
-
+import urllib2
 
 class GetEmails():
     '''
@@ -12,9 +12,28 @@ class GetEmails():
         self.domain = domain
         self.links_visited = []
         self.emails = []
+
+        self.redirectProtHelper = protocol + "://"
+        self.redirected = self.get_redirected_url()
+
+        if self.domain != self.redirected:
+            parsed_url = str(urlparse.urlparse(self.redirected).path)
+            self.domain = parsed_url.replace("www.", "")
+
         self.protocol = protocol + "://www."
         self.url = self.complete_domain_name(self.protocol)
+        print self.url
         self.site_map = [self.url]
+
+    def get_redirected_url(self):
+        '''
+        Gets any url that the homepage redirects to 
+        '''
+        opener = urllib2.build_opener(urllib2.HTTPRedirectHandler)
+        request = urllib2.Request(self.redirectProtHelper + self.domain)
+        f = opener.open(request)
+        return f.url.replace(self.redirectProtHelper, "")
+
     def is_valid_domain(self, domain):
         '''
         Check if the domain entered is a valid domain.
@@ -47,6 +66,7 @@ class GetEmails():
         for link in soup.findAll('a', href=True):
             link = urlparse.urljoin(url, link.get('href'))
             if self.is_not_image(link) and self.should_explore(link):
+                print link
                 self.site_map.append(link)
 
     def is_not_image(self, link):
