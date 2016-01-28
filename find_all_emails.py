@@ -9,6 +9,14 @@ class GetEmails():
     Gets all the emails contained in a domain and prints them out.
     '''
     def __init__(self, domain, protocol):
+        '''
+        Declaration of variables. If the domain redirects to a new page,
+        that new page's domain is set as the domain. 
+        For example: mit.edu redirects to and becomes web.mit.edu.
+        In the case that the redirect is not a homepage, it takes the domain of that
+        page.  
+        Example: redirect to example.com/link/user/1 would have a domain of example.com.
+        '''
         self.domain = domain
         self.links_visited = []
         self.emails = []
@@ -22,12 +30,11 @@ class GetEmails():
 
         self.protocol = protocol + "://www."
         self.url = self.complete_domain_name(self.protocol)
-        print self.url
         self.site_map = [self.url]
 
     def get_redirected_url(self):
         '''
-        Gets any url that the homepage redirects to 
+        Gets any url that the homepage redirects to.
         '''
         opener = urllib2.build_opener(urllib2.HTTPRedirectHandler)
         request = urllib2.Request(self.redirectProtHelper + self.domain)
@@ -66,7 +73,6 @@ class GetEmails():
         for link in soup.findAll('a', href=True):
             link = urlparse.urljoin(url, link.get('href'))
             if self.is_not_image(link) and self.should_explore(link):
-                print link
                 self.site_map.append(link)
 
     def is_not_image(self, link):
