@@ -61,9 +61,11 @@ class GetEmails():
         '''
         Decides whether to explore a given link
         '''
+        url_no_www = self.url.replace("www.", "")
+
         if link in self.links_visited:
             return False
-        if not link.startswith(self.url):
+        if (not link.startswith(self.url)) and not (link.startswith(url_no_www)):
             return False
         if link in self.site_map:
             return False
