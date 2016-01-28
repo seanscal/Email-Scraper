@@ -47,7 +47,6 @@ class GetEmails():
         for link in soup.findAll('a', href=True):
             link = urlparse.urljoin(url, link.get('href'))
             if self.is_not_image(link) and self.should_explore(link):
-                print link
                 self.site_map.append(link)
 
     def is_not_image(self, link):
