@@ -71,15 +71,6 @@ def main(args):
         else: 
             deliveryDictionary[key] = []
 
-
-        
-
-
-
-
-
-                # print deliveryDictionary[key]
-
         print str(key) \
                 + "\nPhone Number: " + str(phoneDictionary[key]) \
                 + "\nDelivery Zones: " + str(deliveryDictionary[key]) + "\n"
