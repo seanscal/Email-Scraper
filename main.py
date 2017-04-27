@@ -88,6 +88,22 @@ def get_hours(key, soup):
     return hoursDict
 
 
+def get_strains(key, soup):
+
+    notNames = ['gram', 'eight', 'quarter', 'half', 'ounce', 'preroll', 'eighth', '2 gram']
+
+    namesDict = {}
+    namesArr = []
+
+    names = soup.findAll('span', attrs={'itemprop':'name'})
+    
+    for name in names:
+        if name.contents and name.contents[0] not in notNames and name.contents[0] not in namesArr:
+           namesArr.append(name.contents[0])
+
+    namesDict[key] = namesArr
+    return namesDict
+
 def main(args):
     
     url = "https://www.allbud.com/dispensaries/massachusetts?results=80"
@@ -104,6 +120,7 @@ def main(args):
         text = urllib2.urlopen(url).read()
         soup = BeautifulSoup(text, "lxml")
 
+        strainsDict = get_strains(key, soup)
         phoneDictionary = get_phone_numbers(key, soup)
         deliveryDictionary = get_delivery_zones(key, soup)
         hoursDict = get_hours(key, soup)
@@ -111,10 +128,12 @@ def main(args):
         data = {"name": key, 
                 "phone": phoneDictionary[key], 
                 "delivery_zones": deliveryDictionary[key],
-                "hours": hoursDict[key]}
+                "hours": hoursDict[key],
+                "strains": strainsDict[key]}
+
         jsonArray.append(data)
 
-    os.remove("ChangedFile.csv")
+    os.remove("caretakers.json")
     write_json(jsonArray)
 
 
