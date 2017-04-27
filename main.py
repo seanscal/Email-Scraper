@@ -60,13 +60,11 @@ def get_delivery_zones(key, soup):
     else: 
         deliveryDictionary[key] = []
 
+    return deliveryDictionary
+
 
 def main(args):
-
-    linkDictionary = {}
-    phoneDictionary = {}
-    deliveryDictionary = {}
-
+    
     url = "https://www.allbud.com/dispensaries/massachusetts?results=80"
     text = urllib2.urlopen(url).read()
     soup = BeautifulSoup(text, "lxml")
