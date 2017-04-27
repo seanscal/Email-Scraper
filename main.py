@@ -13,6 +13,7 @@ import urllib2
 import lxml.html
 import collections
 import json
+import os
 
 def get_links(soup):
 
@@ -62,6 +63,30 @@ def get_delivery_zones(key, soup):
 
     return deliveryDictionary
 
+def get_hours(key, soup):
+
+    dayDict = {}
+    hoursDict = {}
+    dayArr = []
+    hoursArr = []
+
+    days = soup.findAll('span', attrs={'class':'dayname hidden-md'})
+    for day in days:
+        if day.contents:
+            dayArr.append(day.contents[0])
+
+    hours = soup.findAll('div', attrs={'class':'col-xs-5 col-sm-3 col-md-6 col-lg-5 hours'})
+    for hour in hours:
+        if hour.contents:
+            hoursArr.append(hour.contents[0].lstrip().rstrip())
+    # print hoursArr[0]
+
+    for index in range(len(dayArr)):
+        dayDict[dayArr[index]] = hoursArr[index]
+
+    hoursDict[key] = dayDict
+    return hoursDict
+
 
 def main(args):
     
@@ -81,12 +106,19 @@ def main(args):
 
         phoneDictionary = get_phone_numbers(key, soup)
         deliveryDictionary = get_delivery_zones(key, soup)
+        hoursDict = get_hours(key, soup)
 
         data = {"name": key, 
                 "phone": phoneDictionary[key], 
-                "delivery_zones": deliveryDictionary[key]}
+                "delivery_zones": deliveryDictionary[key],
+                "hours": hoursDict[key]}
         jsonArray.append(data)
 
+    os.remove("ChangedFile.csv")
+    write_json(jsonArray)
+
+
+def write_json(jsonArray):
     data = {}
     data['caretakers'] = jsonArray
 
